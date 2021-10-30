@@ -1,0 +1,16 @@
+library(tidyverse)
+library(haven)
+library(formattable)
+library(dplyr)
+
+players <- read.csv("~/Desktop/Grad School/DA 63/Group Project/players.csv",header = TRUE)
+plays <- read.csv("~/Desktop/Grad School/DA 63/Group Project/plays.csv",header = TRUE)
+games <- read.csv("~/Desktop/Grad School/DA 63/Group Project/games.csv",header = TRUE)
+week_data <- read.csv("~/Desktop/Grad School/DA 63/Group Project/week_data.csv",header = TRUE)
+#you would have to import with your own file names 
+
+data_01<- full_join(plays,games,by = "gameId", keep=FALSE)
+
+data_02 <-full_join(week_data,data_01,by = "gameId", keep=FALSE)
+
+final_data <-full_join(data_02,players,by = "nflID", keep=FALSE)
