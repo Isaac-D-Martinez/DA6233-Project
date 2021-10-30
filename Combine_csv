@@ -13,4 +13,4 @@ data_01<- full_join(plays,games,by = "gameId", keep=FALSE)
 
 data_02 <-full_join(week_data,data_01,by = "gameId", keep=FALSE)
 
-final_data <-full_join(data_02,players,by = "nflID", keep=FALSE)
+final_data <-full_join(data_02,players,by = "nflId", keep=FALSE)
