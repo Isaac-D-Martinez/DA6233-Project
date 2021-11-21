@@ -1,0 +1,230 @@
+---
+title: "Final Project Visualizations"
+author: "Isaac Martinez"
+date: "11/20/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Heat Map Visualizations
+
+```{r setup, include=FALSE, echo=FALSE}
+library(sportyR)
+library(dplyr)
+pacman::p_load(showtext, jpeg, png)
+library(ggplot2)
+library(highcharter)
+wk10 = read.csv('week10.csv')
+plays = read.csv('plays.csv')
+games = read.csv('games.csv')
+wk8 = read.csv('week8.csv')
+Phi18 = read.csv('Eagles2018.csv')
+Rushing18 = read.csv('EaglesRushing2018.csv')
+Receiving18 = read.csv('EaglesReceiving2018.csv')
+
+```
+
+
+```{r, echo=FALSE}
+unique(plays$playType)
+str(plays$playType)
+wk8teams = left_join(wk8,
+                      games %>% select(gameId,homeTeamAbbr,visitorTeamAbbr),
+                      by = 'gameId')
+
+wk8teams =wk8teams %>% 
+  mutate(homeTeamAbbr = as.character(homeTeamAbbr), visitorTeamAbbr = as.character(visitorTeamAbbr),
+         tmplay =ifelse(wk8teams$team == "home", wk8teams$homeTeamAbbr, wk8teams$visitorTeamAbbr))
+
+
+ZErtz= wk8teams %>% 
+  filter(displayName == "Zach Ertz")
+
+wr1 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(ZErtz, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+wr1
+
+NAgholor = wk8teams %>% 
+  filter(displayName == "Nelson Agholor")
+
+wr2 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(NAgholor, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+wr2
+
+AJeffery = wk8teams %>% 
+  filter(displayName == "Alshon Jeffery")
+
+wr3 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(AJeffery, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+wr3
+
+JMatthews = wk8teams %>% 
+  filter(displayName == "Jordan Matthews")
+
+wr4 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(JMatthews, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+wr4
+
+WSmallwood = wk8teams %>% 
+  filter(displayName == "Wendell Smallwood")
+
+rb1 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(WSmallwood, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+rb1
+
+#Jay Ajayi was injured Week 8 and didn't play
+JAjayi = wk8teams %>% 
+  filter(displayName == "Jay Ajayi")
+
+rb2 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(JAjayi, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+rb2
+
+CCLement = wk8teams %>% 
+  filter(displayName == "Corey Clement")
+
+rb3 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(CCLement, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+rb3
+
+JAdams = wk8teams %>% 
+  filter(displayName == "Josh Adams")
+
+
+rb4 =geom_football(league= "NFL")+
+  annotation_raster(readPNG("NFL Logo.png"),
+                    xmin = 55, xmax = 65, 
+                    ymin = 22, ymax = 32, interpolate = T)+
+  geom_density_2d_filled(JAdams, mapping = aes(x,y),alpha=.80,contour_var = "ndensity")+
+  theme(legend.position = "none")
+rb4
+
+```
+
+# Team Visualizations
+
+```{r, echo= FALSE}
+PhiWk10 = Phi18 %>% 
+  mutate(Rec = as.character(Rec),PassYdShare = PassY/TotYd, RushYdShare = RushY/TotYd) %>% 
+  filter(Week < 10)
+
+PassYPG <- PhiWk10 %>%
+  hchart("line", hcaes(x = Opp, y = PassY)) %>% 
+  hc_add_theme(hc_theme_google()) %>%
+  hc_colors('#004C54') %>% 
+  hc_tooltip(pointFormat = "<b>Opponent: \n Passing Yards: {point.y}</b>") %>% 
+  hc_xAxis(title = list(text = "Opponent")) %>% 
+  hc_yAxis(title = list(text = "Passing Yards")) %>% 
+  hc_title(text = "Team Passing Yards by Week",
+           useHTML = TRUE, align = "center")
+PassYPG
+
+
+RushYPG <- PhiWk10 %>%
+  hchart("line", hcaes(x = Opp, y = RushY)) %>% 
+  hc_add_theme(hc_theme_google()) %>% 
+  hc_colors('#004C54') %>% 
+  hc_tooltip(pointFormat = "<b>Rushing Yards: {point.y}</b>") %>% 
+  hc_xAxis(title = list(text = "Opponent")) %>% 
+  hc_yAxis(title = list(text = "Rushing Yards")) %>% 
+  hc_title(text = "Team Rushing Yards by Week",
+           useHTML = TRUE, align = "center")
+RushYPG
+
+
+PassShare = PhiWk10 %>% 
+  hchart("line", hcaes(x = Opp, y = PassYdShare*100)) %>% 
+  hc_add_theme(hc_theme_google()) %>%
+  hc_colors('#004C54') %>% 
+  hc_tooltip(pointFormat = "<b>Passing Yard Share: {point.y}%</b>") %>% 
+  hc_xAxis(title = list(text = "Opponent")) %>% 
+  hc_yAxis(title = list(text = "Passing Yard Share"),labels = list(format = "{value}%")) %>% 
+  hc_title(text = "Passing Yard Share by Week",
+           useHTML = TRUE, align = "center")
+PassShare
+
+
+RushShare = PhiWk10 %>%
+  hchart("line", hcaes(x = Opp, y = RushYdShare*100)) %>% 
+  hc_add_theme(hc_theme_google()) %>%
+  hc_colors('#004C54') %>% 
+  hc_tooltip(pointFormat = "<b>Rushing Yard Share: {point.y}%</b>") %>% 
+  hc_xAxis(title = list(text = "Opponent")) %>% 
+  hc_yAxis(title = list(text = "Rushing Yard Share"),labels = list(format = "{value}%")) %>% 
+  hc_title(text = "Rushing Yard Share by Week",
+           useHTML = TRUE, align = "center")
+RushShare
+
+```
+
+
+```{r, echo= FALSE}
+TotalPlayerRush = Rushing18 %>%
+  mutate(YPA = Yds/Att) %>% 
+  select(Week,Player,Yds,Att) %>%
+  na.omit() %>% 
+  group_by(Player) %>% 
+  summarise(RushingYards = sum(Yds)) %>% 
+  arrange(desc(RushingYards))
+
+TopRushers <- TotalPlayerRush %>%
+  hchart("bar", hcaes(x = Player, y = RushingYards)) %>% 
+  hc_add_theme(hc_theme_google()) %>%
+  hc_colors('#004C54') %>% 
+  hc_tooltip(pointFormat = "<b>Total Rushing Yards: {point.y}</b>") %>% 
+  hc_xAxis(title = list(text = "Player")) %>% 
+  hc_yAxis(title = list(text = "Total Rushing Yards")) %>% 
+  hc_title(text = "Rushing Leaders",
+           useHTML = TRUE, align = "center")
+TopRushers
+
+
+TotalPlayerRec = Receiving18 %>%
+  select(Week,Player,Yds) %>%
+  na.omit() %>% 
+  group_by(Player) %>% 
+  summarise(ReceivingYards = sum(Yds)) %>% 
+  arrange(desc(ReceivingYards))
+
+TopReceivers <- TotalPlayerRec[1:10,] %>%
+  hchart("bar", hcaes(x = Player, y = ReceivingYards)) %>% 
+  hc_add_theme(hc_theme_google()) %>%
+  hc_colors('#004C54') %>% 
+  hc_tooltip(pointFormat = "<b>Total Receiving Yards: {point.y}</b>") %>%
+  hc_xAxis(title = list(text = "")) %>% 
+  hc_yAxis(title = list(text = "Total Receiving Yards")) %>% 
+  hc_title(text = "Receiving Leaders",
+           useHTML = TRUE, align = "center")
+TopReceivers
+
+```
+
