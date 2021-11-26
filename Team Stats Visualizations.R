@@ -14,7 +14,7 @@ PassYPG <- PhiWk10 %>%
   hchart("line", hcaes(x = Opp, y = PassY)) %>% 
   hc_add_theme(hc_theme_google()) %>%
   hc_colors('#004C54') %>% 
-  hc_tooltip(pointFormat = "<b>Opponent: \n Passing Yards: {point.y}</b>") %>% 
+  hc_tooltip(pointFormat = "<b>Passing Yards: {point.y}</b>") %>% 
   hc_xAxis(title = list(text = "Opponent")) %>% 
   hc_yAxis(title = list(text = "Passing Yards")) %>% 
   hc_title(text = "Team Passing Yards by Week",
